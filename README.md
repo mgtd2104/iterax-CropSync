@@ -9,9 +9,10 @@
  - [rules.md](./rules.md) 
  - [phases.md](./phases.md) 
  - [design.md](./design.md) 
- 
- memory.md will be added once active development starts. 
+ - [memory.md](./memory.md) 
  
  ## Status 
- Planning complete. Build starting Phase 1. 
+ - **Phase 1 Complete**: Firebase Auth, Guest Mode, Location Detection, and Farmer Onboarding.
+ - **Phase 2 Complete**: Real-time ESP32 Sensor Dashboard, Alert Toast system, Crop Plot cards, centralized Multilingual Translator (English, Hindi, Punjabi), and manual Irrigation Pump Override control.
+ 
  
