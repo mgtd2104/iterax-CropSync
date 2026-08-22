@@ -78,67 +78,17 @@ Sensor data pushes to Firebase Realtime Database every 30–60 seconds, which th
 
 ## 🚀 Live Demo
 
-**Prototype link:** [Add Vercel URL here]
+**Prototype link:** [[Vercel URL](https://iterax-crop-sync.vercel.app/)]
 
-**Demo video:** [Watch on Google Drive](add-your-drive-link-here)
-
----
-
-## 💻 Run Locally
-
-### Prerequisites
-- Node.js (v18+)
-- A Firebase project with Realtime Database + Authentication enabled
-- A Gemini API key ([aistudio.google.com](https://aistudio.google.com/apikey))
-- An OpenWeatherMap API key (optional, for weather-aware advisory)
-
-### 1. Clone the repo
-```bash
-git clone <your-repo-url>
-cd iterax-cropsync
-```
-
-### 2. Backend setup
-```bash
-cd backend
-npm install
-```
-Create a `.env` file in `backend/`:
-GEMINI_API_KEY=your_gemini_key
-WEATHER_API_KEY=your_openweather_key
-PORT=5000
-
-Run the backend:
-```bash
-node server.js
-```
-
-### 3. Frontend setup
-```bash
-cd frontend
-npm install
-```
-Create a `.env` file in `frontend/`:
-VITE_FIREBASE_API_KEY=your_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_DATABASE_URL=https://your_project-default-rtdb.firebaseio.com
-VITE_FIREBASE_PROJECT_ID=your_project
-VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_id
-VITE_FIREBASE_APP_ID=your_app_id
-
-Run the frontend:
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`, with the backend running on `http://localhost:5000`.
+**Demo video:** [Watch on Google Drive](https://drive.google.com/drive/folders/1c7Am_4xd8FHGJL6xvLG33Q_GhzogFcMe?usp=sharing)
 
 ---
+
 
 ## 👥 Team
-- [Your Name]
-- [Teammate Name]
+- K Tejas Gowda
+- MohitGowda T D
+- Sneha M
 
 ---
 
