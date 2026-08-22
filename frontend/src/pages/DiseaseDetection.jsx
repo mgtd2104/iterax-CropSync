@@ -101,7 +101,7 @@ const DiseaseDetection = () => {
     setAnalyzing(true);
     try {
       const base64 = await convertToBase64(file);
-      const response = await fetch("http://localhost:5000/api/disease-detection", {
+      const response = await fetch("https://iterax-cropsync.onrender.com/api/disease-detection", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: base64 })
