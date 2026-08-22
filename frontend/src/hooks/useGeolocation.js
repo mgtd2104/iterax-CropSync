@@ -47,20 +47,45 @@ const findClosestCity = (lat, lon) => {
   return closest;
 };
 
-// Reverse geocode using Nominatim (OpenStreetMap)
+// Reverse geocode using Nominatim (OpenStreetMap) - extracts all administrative levels
 const reverseGeocode = async (lat, lon) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`,
-      { headers: { 'Accept': 'application/json' } }
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1&extratags=1`,
+      { headers: { 'Accept': 'application/json', 'User-Agent': 'IteraX-CropSync/1.0' } }
     );
     const data = await response.json();
     const addr = data.address || {};
-    return {
+    
+    // Extract all possible administrative divisions
+    const result = {
       state: addr.state || addr.province || addr.region || '',
-      district: addr.city_district || addr.district || addr.county || addr.city || addr.town || addr.village || addr.suburb || ''
+      district: addr.city_district || addr.district || addr.county || '',
+      subDistrict: addr.subdistrict || addr.taluk || addr.tehsil || '',
+      city: addr.city || addr.town || addr.village || '',
+      suburb: addr.suburb || addr.neighbourhood || '',
+      postcode: addr.postcode || '',
+      country: addr.country || '',
+      countryCode: addr.country_code || ''
+    };
+    
+    // For India, prioritize most specific administrative unit available
+    // Order: district > subDistrict > city > county > suburb
+    const detectedDistrict = result.district || result.subDistrict || result.city || result.county || result.suburb || '';
+    
+    console.log("[Geolocation] Full address:", addr);
+    console.log("[Geolocation] Parsed:", result);
+    
+    return {
+      state: result.state,
+      district: detectedDistrict,
+      city: result.city,
+      subDistrict: result.subDistrict,
+      postcode: result.postcode,
+      fullAddress: data.display_name || ''
     };
   } catch (e) {
+    console.error("[Geolocation] Reverse geocode error:", e);
     return null;
   }
 };
@@ -95,7 +120,15 @@ export function useGeolocation() {
         console.log("[Geolocation] Reverse geocode result:", geoResult);
         
         if (geoResult && (geoResult.state || geoResult.district)) {
-          setLocation(prev => ({ ...prev, ...geoResult }));
+          setLocation(prev => ({ 
+            ...prev, 
+            state: geoResult.state, 
+            district: geoResult.district,
+            city: geoResult.city,
+            subDistrict: geoResult.subDistrict,
+            postcode: geoResult.postcode,
+            fullAddress: geoResult.fullAddress
+          }));
         } else {
           // Fallback to closest Indian city
           const city = findClosestCity(coords.latitude, coords.longitude);
