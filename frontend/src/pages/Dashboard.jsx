@@ -220,7 +220,7 @@ export default function Dashboard() {
     if (isGuest && advisoryUsedByGuest) return;
     setAdvisoryLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/advisory", {
+      const response = await fetch("https://iterax-cropsync.onrender.com/api/advisory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
