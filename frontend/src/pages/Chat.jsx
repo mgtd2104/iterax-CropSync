@@ -6,7 +6,10 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [chatUsedByGuest, setChatUsedByGuest] = useState(() => localStorage.getItem("guest_chat_used") === "true");
+  const [chatUsedByGuest, setChatUsedByGuest] = useState(() => {
+    const count = parseInt(localStorage.getItem("guest_chat_count") || "0", 10);
+    return count >= 2;
+  });
   const messagesEndRef = useRef(null);
 
   const isGuest = user?.isAnonymous || profile?.is_guest;
@@ -40,8 +43,9 @@ export default function Chat() {
       const data = await response.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply || data.message || "No response" }]);
       if (isGuest) {
-        localStorage.setItem("guest_chat_used", "true");
-        setChatUsedByGuest(true);
+        const newCount = (parseInt(localStorage.getItem("guest_chat_count") || "0", 10)) + 1;
+        localStorage.setItem("guest_chat_count", newCount.toString());
+        if (newCount >= 2) setChatUsedByGuest(true);
       }
     } catch (err) {
       console.error("Chat error:", err);

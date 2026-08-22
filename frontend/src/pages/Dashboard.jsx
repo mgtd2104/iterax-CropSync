@@ -53,7 +53,10 @@ export default function Dashboard() {
 
   const [advisoryText, setAdvisoryText] = useState("");
   const [advisoryLoading, setAdvisoryLoading] = useState(false);
-  const [advisoryUsedByGuest, setAdvisoryUsedByGuest] = useState(() => localStorage.getItem("guest_advisory_used") === "true");
+  const [advisoryUsedByGuest, setAdvisoryUsedByGuest] = useState(() => {
+    const count = parseInt(localStorage.getItem("guest_advisory_count") || "0", 10);
+    return count >= 2;
+  });
   const [cropFilter, setCropFilter] = useState("All");
 
   // Add Crop Modal
@@ -237,8 +240,9 @@ export default function Dashboard() {
       const data = await response.json();
       setAdvisoryText(data.advisory_text);
       if (isGuest) {
-        localStorage.setItem("guest_advisory_used", "true");
-        setAdvisoryUsedByGuest(true);
+        const newCount = (parseInt(localStorage.getItem("guest_advisory_count") || "0", 10)) + 1;
+        localStorage.setItem("guest_advisory_count", newCount.toString());
+        if (newCount >= 2) setAdvisoryUsedByGuest(true);
       }
     } catch (err) {
       console.error("Error fetching advisory:", err);

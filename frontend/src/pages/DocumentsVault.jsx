@@ -36,13 +36,30 @@ export default function DocumentsVault() {
     setError("");
     setSuccess("");
     try {
+      console.log("Uploading file:", file.name, "for user:", user.uid);
+      console.log("Storage bucket:", storage._bucket);
       const fileRef = storageRef(storage, `users/${user.uid}/documents/${file.name}`);
-      await uploadBytes(fileRef, file);
+      console.log("File ref path:", fileRef.fullPath);
+      
+      // Add timeout to detect if upload hangs
+      const uploadPromise = uploadBytes(fileRef, file);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Upload timeout after 30s")), 30000)
+      );
+      const snapshot = await Promise.race([uploadPromise, timeoutPromise]);
+      
+      console.log("Upload snapshot:", snapshot);
+      console.log("Upload complete, metadata:", snapshot.metadata);
       setSuccess("Uploaded successfully");
-      loadFiles();
+      await loadFiles();
     } catch (err) {
       console.error("Upload error:", err);
-      setError("Upload failed");
+      console.error("Error code:", err.code);
+      console.error("Error message:", err.message);
+      console.error("Error serverResponse:", err.serverResponse);
+      const errorMsg = `Upload failed: ${err.message || err.code || "Unknown error"}`;
+      setError(errorMsg);
+      alert(errorMsg); // Visible alert for debugging
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -52,11 +69,13 @@ export default function DocumentsVault() {
   const handleDelete = async (fullPath) => {
     if (!window.confirm("Delete this file?")) return;
     try {
+      console.log("Deleting file:", fullPath);
       await deleteObject(storageRef(storage, fullPath));
+      console.log("Delete successful");
       setFiles((prev) => prev.filter((f) => f.fullPath !== fullPath));
     } catch (err) {
       console.error("Delete error:", err);
-      setError("Delete failed");
+      setError(`Delete failed: ${err.message || err.code || "Unknown error"}`);
     }
   };
 
